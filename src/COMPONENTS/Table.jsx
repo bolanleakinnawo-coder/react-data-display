@@ -1,30 +1,67 @@
 import React from "react";
+import { ToastContainer, toast } from "react-toastify";
+
 import { useState } from "react";
 
 const Table = () => {
+  const [k, setK] = useState(null);
   const [studentDetails, setstudentDetails] = useState([]);
   const [name, setName] = useState("");
   const [level, setLevel] = useState("");
   const [course, setCourse] = useState("");
 
+  const [isEditing, setIsEditing] = useState(false);
+
   const handleName = (e) => setName(e.target.value);
   const handleCourse = (e) => setCourse(e.target.value);
   const handleLevel = (e) => setLevel(e.target.value);
 
+  const editDetails = (index) => {
+    setIsEditing(true);
+    setName(studentDetails[index].name);
+    setLevel(studentDetails[index].level);
+    setCourse(studentDetails[index].course);
+
+    setK(index);
+  };
+  const handleEdit = () => {
+    if (!name || !level || !course) {
+      return toast.error("Kindly fill all fields");
+    }
+
+    const updatedDetails = [...studentDetails];
+
+    updatedDetails[k] = {
+      name,
+      course,
+      level,
+    };
+
+    setstudentDetails(updatedDetails);
+    setIsEditing(false);
+
+    setName("");
+    setCourse("");
+    setLevel("");
+
+    toast.success("Data updated successfully");
+  };
   const deleteDetails = (index) => {
-    console.log(studentDetails);
+    // console.log(studentDetails);
 
-    console.log(index);
-    const newarray = [...studentDetails];
-    newarray.splice(index, 1);
+    // console.log(index);
+    // const newarray = [...studentDetails];
+    // newarray.splice(index, 1);
 
-    setstudentDetails(newarray);
-    console.log(newarray);
+    // setstudentDetails(newarray);
+    // console.log(newarray);
+
+    setstudentDetails(studentDetails.filter((_, i) => i !== index));
   };
 
   const handleSubmit = () => {
     if (!name || !level || !course) {
-      return alert("All fields are required");
+      return toast.error("kindly fill all field");
     }
 
     const detailsObj = {
@@ -32,6 +69,7 @@ const Table = () => {
       level,
       course,
     };
+    toast.success("Data added successfully");
 
     setstudentDetails([...studentDetails, detailsObj]);
 
@@ -62,7 +100,18 @@ const Table = () => {
           onChange={handleLevel}
           placeholder="Enter your level.."
         />
-        <button onClick={handleSubmit}>Submit</button>
+
+        {isEditing ? (
+          <button className="update" onClick={handleEdit}>
+            Update
+          </button>
+        ) : (
+          <button className="submit" onClick={handleSubmit}>
+            Submit
+          </button>
+        )}
+
+        <ToastContainer />
 
         <table>
           <thead>
@@ -83,7 +132,7 @@ const Table = () => {
                 <td>{details.course}</td>
                 <td>{details.level}</td>
                 <td>
-                  <button>Edit</button>
+                  <button onClick={() => editDetails(index)}>Edit</button>
                   <button onClick={() => deleteDetails(index)}>Delete</button>
                 </td>
               </tr>

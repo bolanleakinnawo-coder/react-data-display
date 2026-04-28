@@ -14,6 +14,13 @@ body {
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
 }
 
+/* .update {
+  display: none;
+}
+
+.submit {
+  display: block;
+} */
 input {
   width: 100%;
   padding: 10px;
